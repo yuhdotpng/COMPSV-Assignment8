@@ -50,27 +50,28 @@ class HashTable:
 
     
     def insert(self, key, value):
-        contact = Contact(key,value)
+        contact = Contact(key, value)
         index = self.hash_function(contact.name)
+        current = self.data[index]
 
-        current =  self.data[index] # Get the linked list value(s) for index
-		
-        # If there are no values currently at that position
-        if self.data[index] is None:
+    # If the index is empty, insert the first node
+        if current is None:
             self.data[index] = Node(contact.name, contact.number)
             return
 
-        while current: # Iterate until you reach a value of None
-            if current.key == key: # Check if it is a duplicate
+    # Traverse the linked list
+        while current:
+            if current.key == key:
                 current.value = value
                 return
 
-            if current.next is None: 
-                break  # Stop at last node
-  	
+            if current.next is None:
+                break
+
             current = current.next
-		
-        current.next = Node(key, value) # Add to the end of the list
+
+    # Append new contact
+        current.next = Node(contact.name, contact.number)
     
     def search(self, key):
         index = self.hash_function(key)
@@ -84,13 +85,24 @@ class HashTable:
         return None
 
     def print_table(self):
-        index = 0
-        for item in self.data:
-            current = Contact()
-            index += 1
-            #temporary print statement to make sure my index counting system worked and printed in a similar
-            #format to the expected output
-            print(f"Index {index}:")
+        for index, item in enumerate(self.data):
+            print(f"Index {index}:", end=" ")
+
+            if item is None:
+                print("Empty")
+                continue
+
+            current = item
+
+            while current:
+                print(f"{current.key}: {current.value}", end="")
+
+                if current.next is not None:
+                    print(" -> ", end="")
+
+                current = current.next
+
+            print()
 
 table = HashTable(10)
 table.print_table()
@@ -126,4 +138,39 @@ Index 9: - John: 909-876-1234
 # Search for a value
 contact = table.search("John") 
 print("\nSearch result:", contact)  # Search result: John: 909-876-1234 
+
+# Continuation of code from above
+# Edge Case #1 - Hash Collisons (assuming these hash to the same index) 
+table.insert("Amy", "111-222-3333") 
+table.insert("May", "222-333-1111")  # May collide with Amy depending on hash function 
+table.print_table()
+'''
+Index 0: Empty
+Index 1: Empty
+Index 2: Empty
+Index 3: Empty
+Index 4: Empty
+Index 5: - Amy: 111-222-3333 - May: 222-333-1111 
+Index 6: Empty
+Index 7: - Rebecca: 111-555-0002 
+Index 8: Empty
+Index 9: - John: 909-876-1234 
+'''
+# Edge Case #2 - Duplicate Keys 
+table.insert("Rebecca", "999-444-9999")  # Should update Rebecca's number 
+table.print_table()
+'''
+Index 0: Empty
+Index 1: Empty
+Index 2: Empty
+Index 3: Empty
+Index 4: Empty
+Index 5: - Amy: 111-222-3333 - May: 222-333-1111 
+Index 6: Empty
+Index 7: - Rebecca: 999-444-9999 
+Index 8: Empty
+Index 9: - John: 909-876-1234 
+'''
+# Edge Case #3 - Searching for a value not in the table
+print(table.search("Chris")) # None
 
