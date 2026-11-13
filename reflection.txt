@@ -1,0 +1,8 @@
+A hash table is the correct structure for fast lookups because every item in the hash is assigned an index through a hash function which allows for quick look ups. With
+something like a list or a tree you have to iterate through each item to find what you're looking for but since each value in a hash table is linked to a key through the 
+hash function you just have to say "what is the value when x key is put through the hash function" allowing it to grab the value at that index giving you an O(1) time for 
+lookup instead of something like O(n) for a look up in a list. This comes at a cost though as you need to dedicate more memory to the array and if there are collisions the
+memory strain can increase; alongside that order isn't maintained with a hash table so if you need order than a hash table would not be the way to go. Speaking of collisions,
+in a hash table those are when 2 keys give the same index when put through the hash function. We handle this by making each object a node so they can implement a linked list
+at that index if a collision were to arise. Overall, Hash tables are good when you need quick look up speed without needing to maintain order and you're willing to sacrifice
+memory space for speed.
